@@ -7,4 +7,4 @@
  * existing `@etzhayyim/sdk/pds` import, and the substrate-boundary lint
  * rule's guidance text all keep resolving unchanged.
  */
-export * from "@etzhayyim/atproto-client/pds";
+export * from "@itonami/atproto-client/pds";

@@ -5,7 +5,7 @@
  * Two council members (Alice, Bob) each generate:
  *   - an Ed25519 DID signing key (stands in for did:web verificationMethod),
  *   - a libsignal IdentityKey + signed pre-key,
- *   - a DID-signed com.etzhayyim.encrypted.signalIdentity record published
+ *   - a DID-signed cloud.itonami.encrypted.signalIdentity record published
  *     to a single shared fake-PDS (multi-session mode).
  *
  * Flow:
@@ -170,7 +170,7 @@ describe("council deliberation flow (Tahoe-pattern E2E)", () => {
         resolveRecipientIdentity: recipientResolver(),
       },
       {
-        innerType: "com.etzhayyim.governance.proposal",
+        innerType: "cloud.itonami.governance.proposal",
         record: proposal as unknown as Record<string, unknown>,
         recipients: [bob.did],
       }
@@ -225,7 +225,7 @@ describe("council deliberation flow (Tahoe-pattern E2E)", () => {
         resolveRecipientIdentity: recipientResolver(),
       },
       {
-        innerType: "com.etzhayyim.governance.vote",
+        innerType: "cloud.itonami.governance.vote",
         record: vote as unknown as Record<string, unknown>,
         recipients: [alice.did],
       }
@@ -241,7 +241,7 @@ describe("council deliberation flow (Tahoe-pattern E2E)", () => {
       },
       {
         fromSenders: [bob.did],
-        innerType: "com.etzhayyim.governance.vote",
+        innerType: "cloud.itonami.governance.vote",
       }
     );
 
@@ -299,7 +299,7 @@ describe("council deliberation flow (Tahoe-pattern E2E)", () => {
         resolveRecipientIdentity: resolverWithCarol,
       },
       {
-        innerType: "com.etzhayyim.governance.proposal",
+        innerType: "cloud.itonami.governance.proposal",
         record: {title: "x", body: "y", author: alice.did, category: "x", createdAt: "t"},
         recipients: [carolDid],
         wrapToSelf: false,

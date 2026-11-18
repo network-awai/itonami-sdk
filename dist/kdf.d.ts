@@ -6,4 +6,4 @@
  * existing `@etzhayyim/sdk/kdf` import (in-package and downstream apps)
  * keeps working unchanged.
  */
-export * from "@etzhayyim/pqh/kdf";
+export * from "@itonami/pqh/kdf";

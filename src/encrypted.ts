@@ -47,14 +47,14 @@ import {
   type HybridKemSecretBundle,
 } from "./pq.js";
 
-const COLLECTION_RECORD = "com.etzhayyim.encrypted.record";
-const COLLECTION_KEYWRAP = "com.etzhayyim.encrypted.keyWrap";
-const COLLECTION_SIGNAL_IDENTITY = "com.etzhayyim.encrypted.signalIdentity";
+const COLLECTION_RECORD = "cloud.itonami.encrypted.record";
+const COLLECTION_KEYWRAP = "cloud.itonami.encrypted.keyWrap";
+const COLLECTION_SIGNAL_IDENTITY = "cloud.itonami.encrypted.signalIdentity";
 
 // ── Public types ─────────────────────────────────────────────────────────────
 
 export interface ResolvedRecipientIdentity {
-  /** Publishable bundle stored in `com.etzhayyim.encrypted.signalIdentity`. */
+  /** Publishable bundle stored in `cloud.itonami.encrypted.signalIdentity`. */
   publishable: {
     signalIdentityKey: Uint8Array;
     signalRegistrationId: number;
@@ -83,7 +83,7 @@ export type RecipientIdentityResolver = (
 ) => Promise<ResolvedRecipientIdentity | null>;
 
 export interface EncryptedWriteOpts<T extends Record<string, unknown>> {
-  /** Lexicon NSID of the wrapper record. Default: com.etzhayyim.encrypted.record. */
+  /** Lexicon NSID of the wrapper record. Default: cloud.itonami.encrypted.record. */
   collection?: string;
 
   /** Lexicon NSID describing the inner plaintext shape (informational). */
@@ -190,7 +190,7 @@ const TID_ALPHABET = "234567abcdefghijklmnopqrstuvwxyz";
  */
 export function blindRkey(symKey: Uint8Array, seq: number): string {
   if (seq < 0 || seq > 0xffffffff || !Number.isInteger(seq)) {
-    throw new Error("[etzhayyim-sdk/encrypted] blindRkey seq must be u32");
+    throw new Error("[itonami-sdk/encrypted] blindRkey seq must be u32");
   }
   const seqBytes = new Uint8Array(4);
   new DataView(seqBytes.buffer).setUint32(0, seq, false);
@@ -329,7 +329,7 @@ export async function encryptedWriteStandalone<T extends Record<string, unknown>
     if (!resolved) {
       skipped.push({
         recipient: recipientDid,
-        reason: "no com.etzhayyim.encrypted.signalIdentity record found",
+        reason: "no cloud.itonami.encrypted.signalIdentity record found",
       });
       continue;
     }
@@ -675,7 +675,7 @@ export async function encryptedWrite<T extends Record<string, unknown>>(
 ): Promise<EncryptedWriteReceipt> {
   if (!e.pdsAgent || !e.resolveRecipientIdentity) {
     throw new Error(
-      "[etzhayyim-sdk/encrypted] Etzhayyim instance missing pdsAgent / " +
+      "[itonami-sdk/encrypted] Etzhayyim instance missing pdsAgent / " +
         "resolveRecipientIdentity. Configure these on the " +
         "instance, or use encryptedWriteStandalone() directly."
     );
@@ -700,7 +700,7 @@ export async function encryptedRead<T>(
 ): Promise<EncryptedReadResponse<T>> {
   if (!e.pdsAgent) {
     throw new Error(
-      "[etzhayyim-sdk/encrypted] Etzhayyim instance missing pdsAgent. " +
+      "[itonami-sdk/encrypted] Etzhayyim instance missing pdsAgent. " +
         "Configure it on the instance, or use " +
         "encryptedReadStandalone() directly."
     );

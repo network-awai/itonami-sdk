@@ -69,7 +69,7 @@ export function formatUsdc(micros) {
 export function parseUsdcPerSecond(perPeriod) {
     const m = perPeriod.match(/^([\d.]+)\s*\/\s*(second|minute|hour|day|week|month|year)$/);
     if (!m) {
-        throw new Error(`[etzhayyim-sdk/pay] parseUsdcPerSecond: invalid format ${JSON.stringify(perPeriod)} ` +
+        throw new Error(`[itonami-sdk/pay] parseUsdcPerSecond: invalid format ${JSON.stringify(perPeriod)} ` +
             `(expected '<amount> / <second|minute|hour|day|week|month|year>')`);
     }
     const amount = parseUsdc(m[1]);
@@ -125,12 +125,12 @@ export class PayClient {
             hash: txHash,
         });
         if (receipt.status !== "success") {
-            throw new Error(`[etzhayyim-sdk/pay] USDC.transfer reverted: ${txHash}`);
+            throw new Error(`[itonami-sdk/pay] USDC.transfer reverted: ${txHash}`);
         }
         let recordUri = "";
         if (pdsAgent) {
             const chainId = await this.publicClient.getChainId();
-            const collection = opts.reason.collection ?? "com.etzhayyim.apps.payment.sent";
+            const collection = opts.reason.collection ?? "cloud.itonami.apps.payment.sent";
             const record = {
                 to: opts.to,
                 amountUsdcMicros: Number(opts.amount), // safe up to 2^53; cast bigint to JSON number
@@ -167,18 +167,18 @@ export async function pay(opts) {
     return client.pay({ to: opts.to, amount: opts.amount, reason: opts.reason }, opts.pds);
 }
 export async function payStream(_opts) {
-    throw new Error("[etzhayyim-sdk/pay] payStream() v0.2+: Superfluid.callAgreement(CFAv1.createFlow). " +
+    throw new Error("[itonami-sdk/pay] payStream() v0.2+: Superfluid.callAgreement(CFAv1.createFlow). " +
         "v0.1 only supports one-shot pay().");
 }
 export async function payStreamStop(_streamId) {
-    throw new Error("[etzhayyim-sdk/pay] payStreamStop() v0.2+");
+    throw new Error("[itonami-sdk/pay] payStreamStop() v0.2+");
 }
 export async function escrowOpen(_opts) {
-    throw new Error("[etzhayyim-sdk/pay] escrowOpen() v0.2+: Gnosis Safe 2-of-3 deploy.");
+    throw new Error("[itonami-sdk/pay] escrowOpen() v0.2+: Gnosis Safe 2-of-3 deploy.");
 }
 export async function escrowRelease(_safeAddress, _to) {
-    throw new Error("[etzhayyim-sdk/pay] escrowRelease() v0.2+");
+    throw new Error("[itonami-sdk/pay] escrowRelease() v0.2+");
 }
 export async function splitDistribute(_opts) {
-    throw new Error("[etzhayyim-sdk/pay] splitDistribute() v0.2+: 0xSplits.distributeERC20.");
+    throw new Error("[itonami-sdk/pay] splitDistribute() v0.2+: 0xSplits.distributeERC20.");
 }

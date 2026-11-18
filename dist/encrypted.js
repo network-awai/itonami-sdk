@@ -19,9 +19,9 @@ import { verifySignalIdentityHybrid, } from "./did-signal.js";
 import * as pds from "./pds.js";
 import { establishSession, establishSessionInitiator, establishSessionResponder, unwrapKey, wrapKey, } from "./signal.js";
 import { PQ_SUITE, } from "./pq.js";
-const COLLECTION_RECORD = "com.etzhayyim.encrypted.record";
-const COLLECTION_KEYWRAP = "com.etzhayyim.encrypted.keyWrap";
-const COLLECTION_SIGNAL_IDENTITY = "com.etzhayyim.encrypted.signalIdentity";
+const COLLECTION_RECORD = "cloud.itonami.encrypted.record";
+const COLLECTION_KEYWRAP = "cloud.itonami.encrypted.keyWrap";
+const COLLECTION_SIGNAL_IDENTITY = "cloud.itonami.encrypted.signalIdentity";
 // ── rkey blinding (ADR-2605181200) ───────────────────────────────────────────
 /** AT Proto TID alphabet (base32-sortable, lowercase). */
 const TID_ALPHABET = "234567abcdefghijklmnopqrstuvwxyz";
@@ -36,7 +36,7 @@ const TID_ALPHABET = "234567abcdefghijklmnopqrstuvwxyz";
  */
 export function blindRkey(symKey, seq) {
     if (seq < 0 || seq > 0xffffffff || !Number.isInteger(seq)) {
-        throw new Error("[etzhayyim-sdk/encrypted] blindRkey seq must be u32");
+        throw new Error("[itonami-sdk/encrypted] blindRkey seq must be u32");
     }
     const seqBytes = new Uint8Array(4);
     new DataView(seqBytes.buffer).setUint32(0, seq, false);
@@ -125,7 +125,7 @@ export async function encryptedWriteStandalone(deps, opts) {
         if (!resolved) {
             skipped.push({
                 recipient: recipientDid,
-                reason: "no com.etzhayyim.encrypted.signalIdentity record found",
+                reason: "no cloud.itonami.encrypted.signalIdentity record found",
             });
             continue;
         }
@@ -387,7 +387,7 @@ export async function publishSignalIdentity(opts) {
  */
 export async function encryptedWrite(e, opts) {
     if (!e.pdsAgent || !e.resolveRecipientIdentity) {
-        throw new Error("[etzhayyim-sdk/encrypted] Etzhayyim instance missing pdsAgent / " +
+        throw new Error("[itonami-sdk/encrypted] Etzhayyim instance missing pdsAgent / " +
             "resolveRecipientIdentity. Configure these on the " +
             "instance, or use encryptedWriteStandalone() directly.");
     }
@@ -399,7 +399,7 @@ export async function encryptedWrite(e, opts) {
 }
 export async function encryptedRead(e, opts) {
     if (!e.pdsAgent) {
-        throw new Error("[etzhayyim-sdk/encrypted] Etzhayyim instance missing pdsAgent. " +
+        throw new Error("[itonami-sdk/encrypted] Etzhayyim instance missing pdsAgent. " +
             "Configure it on the instance, or use " +
             "encryptedReadStandalone() directly.");
     }

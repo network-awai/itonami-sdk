@@ -99,7 +99,7 @@ export function parseUsdcPerSecond(perPeriod: string): bigint {
   const m = perPeriod.match(/^([\d.]+)\s*\/\s*(second|minute|hour|day|week|month|year)$/);
   if (!m) {
     throw new Error(
-      `[etzhayyim-sdk/pay] parseUsdcPerSecond: invalid format ${JSON.stringify(perPeriod)} ` +
+      `[itonami-sdk/pay] parseUsdcPerSecond: invalid format ${JSON.stringify(perPeriod)} ` +
         `(expected '<amount> / <second|minute|hour|day|week|month|year>')`
     );
   }
@@ -137,7 +137,7 @@ export interface PayOpts {
 }
 
 export interface PaymentReason {
-  /** NSID. Default `com.etzhayyim.apps.payment.sent`. */
+  /** NSID. Default `cloud.itonami.apps.payment.sent`. */
   collection?: string;
   /** Purpose tag. */
   purpose: PaymentPurpose;
@@ -211,13 +211,13 @@ export class PayClient {
       hash: txHash,
     });
     if (receipt.status !== "success") {
-      throw new Error(`[etzhayyim-sdk/pay] USDC.transfer reverted: ${txHash}`);
+      throw new Error(`[itonami-sdk/pay] USDC.transfer reverted: ${txHash}`);
     }
 
     let recordUri = "";
     if (pdsAgent) {
       const chainId = await this.publicClient.getChainId();
-      const collection = opts.reason.collection ?? "com.etzhayyim.apps.payment.sent";
+      const collection = opts.reason.collection ?? "cloud.itonami.apps.payment.sent";
       const record = {
         to: opts.to,
         amountUsdcMicros: Number(opts.amount), // safe up to 2^53; cast bigint to JSON number
@@ -287,13 +287,13 @@ export async function payStream(_opts: PayStreamOpts): Promise<{
   startedAt: bigint;
 }> {
   throw new Error(
-    "[etzhayyim-sdk/pay] payStream() v0.2+: Superfluid.callAgreement(CFAv1.createFlow). " +
+    "[itonami-sdk/pay] payStream() v0.2+: Superfluid.callAgreement(CFAv1.createFlow). " +
       "v0.1 only supports one-shot pay()."
   );
 }
 
 export async function payStreamStop(_streamId: Hex): Promise<void> {
-  throw new Error("[etzhayyim-sdk/pay] payStreamStop() v0.2+");
+  throw new Error("[itonami-sdk/pay] payStreamStop() v0.2+");
 }
 
 export interface EscrowOpenOpts {
@@ -309,7 +309,7 @@ export async function escrowOpen(_opts: EscrowOpenOpts): Promise<{
   recordUri: string;
 }> {
   throw new Error(
-    "[etzhayyim-sdk/pay] escrowOpen() v0.2+: Gnosis Safe 2-of-3 deploy."
+    "[itonami-sdk/pay] escrowOpen() v0.2+: Gnosis Safe 2-of-3 deploy."
   );
 }
 
@@ -317,7 +317,7 @@ export async function escrowRelease(
   _safeAddress: Address,
   _to: "recipient" | "user"
 ): Promise<{ txHash: Hash; recordUri: string }> {
-  throw new Error("[etzhayyim-sdk/pay] escrowRelease() v0.2+");
+  throw new Error("[itonami-sdk/pay] escrowRelease() v0.2+");
 }
 
 export interface SplitDistributeOpts {
@@ -331,6 +331,6 @@ export async function splitDistribute(_opts: SplitDistributeOpts): Promise<{
   recordUri: string;
 }> {
   throw new Error(
-    "[etzhayyim-sdk/pay] splitDistribute() v0.2+: 0xSplits.distributeERC20."
+    "[itonami-sdk/pay] splitDistribute() v0.2+: 0xSplits.distributeERC20."
   );
 }

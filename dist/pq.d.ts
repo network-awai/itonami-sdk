@@ -6,4 +6,4 @@
  * existing `@etzhayyim/sdk/pq` import (in-package and downstream apps)
  * keeps working unchanged.
  */
-export * from "@etzhayyim/pqh/pq";
+export * from "@itonami/pqh/pq";

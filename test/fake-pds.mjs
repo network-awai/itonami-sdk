@@ -47,8 +47,8 @@ function fakeCid(_record) {
 
 export async function startFakePds({
   port = 0,
-  sessionDid = "did:web:fake.etzhayyim.test",
-  sessionHandle = "fake.etzhayyim.test",
+  sessionDid = "did:web:fake.itonami.test",
+  sessionHandle = "fake.itonami.test",
   // Optional: multi-session mode. Map<accessJwt, {did, handle}>. When set,
   // getSession looks up the session by the Authorization bearer token so
   // multiple actors can share one fake-pds instance.
@@ -76,15 +76,15 @@ export async function startFakePds({
       return {
         did: s.did,
         handle: s.handle,
-        email: "fake@etzhayyim.test",
+        email: "fake@itonami.test",
         emailConfirmed: true,
         active: true,
       };
     },
 
     "POST /xrpc/com.atproto.server.refreshSession": () => ({
-      did: "did:web:fake.etzhayyim.test",
-      handle: "fake.etzhayyim.test",
+      did: "did:web:fake.itonami.test",
+      handle: "fake.itonami.test",
       accessJwt: "fake-access-" + newTid(),
       refreshJwt: "fake-refresh-" + newTid(),
       active: true,

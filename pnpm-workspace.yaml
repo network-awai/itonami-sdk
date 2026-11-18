@@ -1,4 +1,4 @@
-# Every @etzhayyim/* dependency is a git dep with `prepare: tsc`, so pnpm >= 10.26
+# Every @itonami/* dependency is a git dep with `prepare: tsc`, so pnpm >= 10.26
 # refuses to build it without an explicit allowlist:
 #
 #   ERR_PNPM_GIT_DEP_PREPARE_NOT_ALLOWED  ... needs to execute build scripts but
@@ -9,10 +9,10 @@
 # you actually want Signal transport.
 onlyBuiltDependencies:
   - "@etzhayyim/sdk"
-  - "@etzhayyim/base-l2"
-  - "@etzhayyim/checkpointer"
-  - "@etzhayyim/atproto-client"
-  - "@etzhayyim/ipfs"
-  - "@etzhayyim/pqh"
-  - "@etzhayyim/witness-quorum"
+  - "@itonami/base-l2"
+  - "@itonami/checkpointer"
+  - "@itonami/atproto-client"
+  - "@itonami/ipfs"
+  - "@itonami/pqh"
+  - "@itonami/witness-quorum"
   - "@signalapp/libsignal-client"

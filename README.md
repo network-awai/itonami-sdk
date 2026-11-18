@@ -1,7 +1,7 @@
 # `@etzhayyim/sdk` (repo: `kotoba-lang/sdk`)
 
 kotoba substrate SDK — **AT Protocol MST + IPFS + Base L2 anchor** behind one
-API. Originally `etzhayyim/com-etzhayyim-sdk`; that name now 301-redirects here.
+API. Originally `itonami/itonami-sdk`; that name now 301-redirects here.
 
 ## Status, measured 2026-08-28
 
@@ -41,12 +41,12 @@ and this SDK still pins each at its last TypeScript commit:
 
 | shim → package | pinned here | that pin is | the package today |
 |---|---|---|---|
-| `l2`, `paymaster` → `@etzhayyim/base-l2` | `14fac05e` | 2026-07-01 TS scaffold | 8 `.clj` / `.cljc`, no `package.json` |
-| `checkpointer` → `@etzhayyim/checkpointer` | `63586c4f` | 2026-07-01 TS scaffold | 18 `.clj` + 10 `.cljc` |
-| `pds`, `atproto` → `@etzhayyim/atproto-client` | `da29075c` | 2026-07-01 TS scaffold | 2 `.cljc` |
-| `ipfs` → `@etzhayyim/ipfs` | `671888e0` | 2026-07-01 TS scaffold | repo renamed `io-ipfs`; `.edn` / `.kotoba` |
-| `crypto`, `pq`, `kdf`, `signal`, `did-signal` → `@etzhayyim/pqh` | `ab728717` | 2026-07-01 | 8 `.clj` + 7 `.cljc` |
-| — → `@etzhayyim/witness-quorum` | `f86d3d73` | 2026-07-01 TS scaffold | 16 `.clj` |
+| `l2`, `paymaster` → `@itonami/base-l2` | `14fac05e` | 2026-07-01 TS scaffold | 8 `.clj` / `.cljc`, no `package.json` |
+| `checkpointer` → `@itonami/checkpointer` | `63586c4f` | 2026-07-01 TS scaffold | 18 `.clj` + 10 `.cljc` |
+| `pds`, `atproto` → `@itonami/atproto-client` | `da29075c` | 2026-07-01 TS scaffold | 2 `.cljc` |
+| `ipfs` → `@itonami/ipfs` | `671888e0` | 2026-07-01 TS scaffold | repo renamed `io-ipfs`; `.edn` / `.kotoba` |
+| `crypto`, `pq`, `kdf`, `signal`, `did-signal` → `@itonami/pqh` | `ab728717` | 2026-07-01 | 8 `.clj` + 7 `.cljc` |
+| — → `@itonami/witness-quorum` | `f86d3d73` | 2026-07-01 TS scaffold | 16 `.clj` |
 
 **So this closure cannot be advanced.** Bumping any of those pins does not get
 a newer TypeScript package; it gets a Clojure repository with no npm identity.
@@ -61,12 +61,12 @@ on Base with no dependency on this SDK at all.
 
 ## The closure cannot be installed, and cannot be repaired in place
 
-`@etzhayyim/checkpointer@63586c4f` is the one edge in the graph that does not
+`@itonami/checkpointer@63586c4f` is the one edge in the graph that does not
 pin its own dependencies:
 
 ```json
-"@etzhayyim/ipfs": "git+https://github.com/kotoba-lang/ipfs.git#main",
-"@etzhayyim/pqh":  "git+https://github.com/kotoba-lang/pqh.git#main"
+"@itonami/ipfs": "git+https://github.com/kotoba-lang/ipfs.git#main",
+"@itonami/pqh":  "git+https://github.com/kotoba-lang/pqh.git#main"
 ```
 
 `#main` silently followed both repos through a rename and a change of language.
@@ -112,9 +112,9 @@ Other errors you will meet on the way, none of them the real problem:
 ## Charter coupling
 
 `charter-compliance-gate.ts` and `donate.ts`'s purpose enum (`kisha`, `tithe`,
-`grant`, and the 10 % Public-Fund `TitheRouter` split) encode etzhayyim's
+`grant`, and the 10 % Public-Fund `TitheRouter` split) encode itonami's
 religious-corporation charter directly into the payment API. Per
-ADR-2608281200 those concepts are being **separated** into an etzhayyim-only
+ADR-2608281200 those concepts are being **separated** into an itonami-only
 layer rather than inherited by `cloud-itonami` actors — separated, not deleted,
 since removing a charter from a library carries a legal question that ADR does
 not settle. Nothing has moved yet; this is a note about direction, not a
@@ -140,19 +140,19 @@ completed change.
 import { Etzhayyim } from "@etzhayyim/sdk";
 
 const e = new Etzhayyim({
-  did: "did:web:etzhayyim.com",
-  pdsUrl: "https://pds.etzhayyim.com",
-  ipfsGateway: "https://ipfs.etzhayyim.com",
-  ipfsApiUrl: "https://ipfs-api.etzhayyim.com",
+  did: "did:web:itonami.cloud",
+  pdsUrl: "https://pds.itonami.cloud",
+  ipfsGateway: "https://ipfs.itonami.cloud",
+  ipfsApiUrl: "https://ipfs-api.itonami.cloud",
   l2RpcUrl: "https://mainnet.base.org",
-  anchorContract: "0xANCHOR_ETZHAYYIM",
+  anchorContract: "0xANCHOR_ITONAMI",
   signer: passkeyDidSigner,  // WebAuthn → DID-bound
 });
 
 // Write — pins blob to IPFS, then createRecord on PDS, then schedules
 // MST root for next L2 anchor batch.
 const receipt = await e.write({
-  collection: "com.etzhayyim.apps.openIsco.occupation",
+  collection: "cloud.itonami.apps.openIsco.occupation",
   record: {
     code: "2511",
     name: "Software Developer",
@@ -165,7 +165,7 @@ const receipt = await e.write({
 
 // Read — MST traversal, optional blob fetch.
 const { records, cursor } = await e.read<Occupation>({
-  collection: "com.etzhayyim.apps.openIsco.occupation",
+  collection: "cloud.itonami.apps.openIsco.occupation",
   prefix: "2",   // major code prefix
   limit: 50,
 });
@@ -176,7 +176,7 @@ const proof = await e.verify(receipt.uri);
 
 // Subscribe — replaces streaming MV.
 for await (const ev of e.subscribe<Occupation>({
-  collections: ["com.etzhayyim.apps.openIsco.occupation"],
+  collections: ["cloud.itonami.apps.openIsco.occupation"],
 })) {
   console.log(ev.op, ev.uri, ev.value);
 }
@@ -194,18 +194,18 @@ src/
 ├── abi.ts                       # ABI encode/decode
 ├── pay.ts                       # USDC + ERC-4337 + Superfluid + Safe + 0xSplits
 ├── donate.ts                    # donation purposes + TitheRouter split
-└── charter-compliance-gate.ts   # charter checks (etzhayyim-specific — see above)
+└── charter-compliance-gate.ts   # charter checks (itonami-specific — see above)
 ```
 
 Re-export shims onto the six relocated packages — each ~10 lines, and each one
 a pointer into the frozen closure:
 
 ```
-pds.ts atproto.ts    -> @etzhayyim/atproto-client
-ipfs.ts              -> @etzhayyim/ipfs
-l2.ts paymaster.ts   -> @etzhayyim/base-l2
-checkpointer.ts      -> @etzhayyim/checkpointer
-crypto.ts pq.ts kdf.ts signal.ts did-signal.ts -> @etzhayyim/pqh
+pds.ts atproto.ts    -> @itonami/atproto-client
+ipfs.ts              -> @itonami/ipfs
+l2.ts paymaster.ts   -> @itonami/base-l2
+checkpointer.ts      -> @itonami/checkpointer
+crypto.ts pq.ts kdf.ts signal.ts did-signal.ts -> @itonami/pqh
 kotoba-datomic/      -> (local)
 ```
 
@@ -214,12 +214,12 @@ Apps MUST import from `@etzhayyim/sdk` only. Direct imports of `@atproto/api`, I
 ## Hard rules (enforced by ADR-2605172000 + ADR-2605172100 + future CI hook)
 
 State substrate (ADR-2605172000):
-- **No `risingwave` / `kysely` / `pg` / `postgres` imports** anywhere under `etzhayyim/root/60-apps/` or `etzhayyim/root/20-actors/` (excluding this SDK itself).
+- **No `risingwave` / `kysely` / `pg` / `postgres` imports** anywhere under `itonami/root/60-apps/` or `itonami/root/20-actors/` (excluding this SDK itself).
 - **No SQL strings** (`SELECT`, `INSERT`, `CREATE TABLE`, `mv_`, `vertex_`) outside SQL-migration test fixtures.
 - **No central DB credentials** in app code or env. Identity is DID; signing is WebAuthn or operator-held private key.
 
 Payment substrate (ADR-2605172100):
-- **No `stripe` / `paypal` / `square` / `razorpay` / `braintree` / `adyen` imports** anywhere under `etzhayyim/root/`.
+- **No `stripe` / `paypal` / `square` / `razorpay` / `braintree` / `adyen` imports** anywhere under `itonami/root/`.
 - **No fiat currency codes** (`USD`, `EUR`, `JPY`, `INR`, ...) as `currency` field in payment records. USDC base units only.
 - **No `bank_account` / `ach_credit` / `wire_transfer` / `card_number` literals**.
 - **All payments through SDK pay/payStream/escrow/split methods.** Direct `viem.writeContract` for USDC transfer from app code is prohibited — `src/pay.ts` is the only seam.
@@ -227,17 +227,17 @@ Payment substrate (ADR-2605172100):
 
 ## Encrypted records (Tahoe-pattern, ADR-2605181100)
 
-Private state on the substrate. AEAD envelope (`com.etzhayyim.encrypted.record`) + per-recipient Signal-wrapped symmetric key (`com.etzhayyim.encrypted.keyWrap`). The CID over the envelope inherits MST verify-cap + L2 anchor finality from ADR-2605172000.
+Private state on the substrate. AEAD envelope (`cloud.itonami.encrypted.record`) + per-recipient Signal-wrapped symmetric key (`cloud.itonami.encrypted.keyWrap`). The CID over the envelope inherits MST verify-cap + L2 anchor finality from ADR-2605172000.
 
 ```typescript
 await e.encryptedWrite({
-  innerType:  "com.etzhayyim.governance.proposal",
+  innerType:  "cloud.itonami.governance.proposal",
   record:     { title: "Council motion 42", body: "..." },
   recipients: ["did:web:alice.example", "did:web:bob.example"],
 });
 
 const { records } = await e.encryptedRead<ProposalBody>({
-  innerType: "com.etzhayyim.governance.proposal",
+  innerType: "cloud.itonami.governance.proposal",
 });
 ```
 
@@ -273,7 +273,7 @@ Both default off in v0.1.x to give the council-flow reference impl a clean rollo
 - `viem` — Base L2 RPC + contract interaction
 - `@noble/ciphers` + `@noble/hashes` + `@noble/curves` — AEAD, hash, Ed25519 (pure TS)
 - `@signalapp/libsignal-client` (optional) — Signal Protocol for key-wrap delivery
-- IPFS HTTP API client — resolved: `@etzhayyim/ipfs` (now `kotoba-lang/io-ipfs`)
+- IPFS HTTP API client — resolved: `@itonami/ipfs` (now `kotoba-lang/io-ipfs`)
 
 ## Versioning
 
@@ -287,10 +287,10 @@ is frozen*.
 ## See also
 
 The three ADR links that used to be here were `../../90-docs/adr/…` relative
-paths, which resolved when this was a directory inside `etzhayyim/root` and
+paths, which resolved when this was a directory inside `itonami/root` and
 resolve nowhere now. They are named rather than linked:
 
-- **ADR-2608281200** (superproject) — the etzhayyim→cloud-itonami/kotoba-lang
+- **ADR-2608281200** (superproject) — the itonami→cloud-itonami/kotoba-lang
   coordinate migration; the source of the freeze table above
 - **ADR-2605172000** — substrate hard rule + per-app migration patterns
 - **ADR-2605172100** — payment substrate

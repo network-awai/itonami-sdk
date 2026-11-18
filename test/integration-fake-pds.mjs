@@ -1,7 +1,7 @@
 // Smoke: bi.join Stage 2 + bi.attest's optional AT Record write hit a
 // real (in-memory fake) PDS. Verifies the SDK actually produces the
-// canonical `com.etzhayyim.apps.etzhayyim.oath` and
-// `com.etzhayyim.event.prayer` records with the expected fields.
+// canonical `cloud.itonami.apps.itonami.oath` and
+// `cloud.itonami.event.prayer` records with the expected fields.
 //
 // Anvil dependencies are the same as integration-full.mjs (forge
 // script Deploy must be done before; addresses inlined below). When
@@ -9,7 +9,7 @@
 // SBT + attestations and the records add to whatever's there.
 //
 // Usage:
-//   cd 20-actors/etzhayyim-sdk && pnpm build && node test/integration-fake-pds.mjs
+//   cd 20-actors/itonami-sdk && pnpm build && node test/integration-fake-pds.mjs
 
 import {createPublicClient, createWalletClient, http, keccak256} from "viem";
 import {privateKeyToAccount} from "viem/accounts";
@@ -41,17 +41,17 @@ const fail = (msg, ctx) => {
 
 // ─── Boot fake PDS + bind AtpAgent ──────────────────────────────────
 
-const did = "did:web:officer1.etzhayyim.com";
+const did = "did:web:officer1.itonami.cloud";
 
 log("Step 0 — start in-memory fake PDS");
-const pds = await startFakePds({port: 4711, sessionDid: did, sessionHandle: "officer1.etzhayyim.com"});
+const pds = await startFakePds({port: 4711, sessionDid: did, sessionHandle: "officer1.itonami.cloud"});
 log("  fake PDS URL:", pds.url);
 const pdsAgent = new AtpAgent({service: pds.url});
 // Bypass network login: resumeSession against the fake server hydrates
 // the agent's session from the getSession response.
 await pdsAgent.resumeSession({
   did,
-  handle: "officer1.etzhayyim.com",
+  handle: "officer1.itonami.cloud",
   accessJwt: "fake-access",
   refreshJwt: "fake-refresh",
   active: true,
@@ -87,7 +87,7 @@ log("  oathRecordUri:   ", joinResult.oathRecordUri);
 log("  fullyEnrolled:   ", joinResult.fullyEnrolled, "(still false — no officerRelayer wired)");
 
 if (!joinResult.oathRecordUri) fail("oath record URI missing");
-if (!joinResult.oathRecordUri.startsWith(`at://${did}/com.etzhayyim.apps.etzhayyim.oath/`)) {
+if (!joinResult.oathRecordUri.startsWith(`at://${did}/cloud.itonami.apps.itonami.oath/`)) {
   fail("oath record URI shape wrong", joinResult.oathRecordUri);
 }
 
@@ -95,7 +95,7 @@ if (!joinResult.oathRecordUri.startsWith(`at://${did}/com.etzhayyim.apps.etzhayy
 const oathRec = pds.records.get(joinResult.oathRecordUri);
 if (!oathRec) fail("oath record not stored on fake PDS");
 log("  oath record value keys:", Object.keys(oathRec.value).sort());
-if (oathRec.value.$type !== "com.etzhayyim.apps.etzhayyim.oath") fail("$type mismatch", oathRec.value);
+if (oathRec.value.$type !== "cloud.itonami.apps.itonami.oath") fail("$type mismatch", oathRec.value);
 if (oathRec.value.oathHash !== oathHash) fail("oath hash mismatch");
 if (oathRec.value.membershipTxHash !== joinResult.membershipTxHash) fail("tx hash not threaded into record");
 if (!oathRec.value.oathText.includes("Tree of Life")) fail("canonical oath text missing");
@@ -131,13 +131,13 @@ log("  attest tx:        ", attestRes.txHash);
 log("  attest recordUri: ", attestRes.recordUri);
 
 if (!attestRes.recordUri) fail("attest record URI missing — PDS write didn't fire");
-if (!attestRes.recordUri.startsWith(`at://${did}/com.etzhayyim.event.prayer/`)) {
+if (!attestRes.recordUri.startsWith(`at://${did}/cloud.itonami.event.prayer/`)) {
   fail("attest record URI shape wrong", attestRes.recordUri);
 }
 const evtRec = pds.records.get(attestRes.recordUri);
 if (!evtRec) fail("event record not stored on fake PDS");
 log("  event record value keys:", Object.keys(evtRec.value).sort());
-if (evtRec.value.$type !== "com.etzhayyim.event.prayer") fail("$type mismatch", evtRec.value);
+if (evtRec.value.$type !== "cloud.itonami.event.prayer") fail("$type mismatch", evtRec.value);
 if (evtRec.value.chainTxHash !== attestRes.txHash) fail("chain tx hash not threaded");
 if (evtRec.value.tokenId !== Number(tokenId)) fail("tokenId not threaded");
 

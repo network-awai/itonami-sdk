@@ -6,4 +6,4 @@
  * `index.ts`'s existing relative import and the public
  * `@etzhayyim/sdk/ipfs` subpath keep working unchanged.
  */
-export * from "@etzhayyim/ipfs";
+export * from "@itonami/ipfs";

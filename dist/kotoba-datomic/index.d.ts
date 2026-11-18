@@ -8,4 +8,4 @@
  * from "./kotoba-datomic/index.js"`) and the public
  * `@etzhayyim/sdk/kotoba-datomic` subpath keep resolving unchanged.
  */
-export * from "@etzhayyim/witness-quorum";
+export * from "@itonami/witness-quorum";

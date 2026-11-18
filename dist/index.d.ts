@@ -1,8 +1,8 @@
 /**
  * @etzhayyim/sdk
  *
- * kotoba substrate SDK for etzhayyim open religious-corp apps.
- * Per ADR-2605172000 — apps under etzhayyim/root MUST NOT depend on
+ * kotoba substrate SDK for itonami open religious-corp apps.
+ * Per ADR-2605172000 — apps under itonami/root MUST NOT depend on
  * RisingWave or any centralized off-chain DB. This SDK wraps the
  * primary substrate (AT MST + IPFS + Base L2 anchor) as one API.
  *
@@ -14,7 +14,7 @@ export interface EtzhayyimConfig {
     did: string;
     /** PDS HTTP endpoint. Default: from DID document `service[type=AtprotoPersonalDataServer]`. */
     pdsUrl?: string;
-    /** IPFS HTTP gateway for blob fetch. Default: `https://ipfs.etzhayyim.com`. */
+    /** IPFS HTTP gateway for blob fetch. Default: `https://ipfs.itonami.cloud`. */
     ipfsGateway?: string;
     /** IPFS HTTP API for pin. Required for write operations with blobs. */
     ipfsApiUrl?: string;
@@ -29,7 +29,7 @@ export interface EtzhayyimConfig {
      */
     projectionDiscoverDid?: string;
     /**
-     * kotoba server base URL (e.g. `https://kotoba.etzhayyim.com` or
+     * kotoba server base URL (e.g. `https://kotoba.itonami.cloud` or
      * `http://127.0.0.1:8077`). When set, `yoro-kotoba` feed/graph/actor reads
      * resolve through the kotoba Datom log (`datomic.datoms`) — the canonical
      * read path (ADR-2606013200, supersedes the kotoba-datomic-projection leg).
@@ -71,7 +71,7 @@ export interface Signer {
     publicKeyMultibase: string;
 }
 export interface WriteOpts<T extends Record<string, unknown>> {
-    /** Lexicon NSID. e.g. `com.etzhayyim.apps.openIsco.occupation`. */
+    /** Lexicon NSID. e.g. `cloud.itonami.apps.openIsco.occupation`. */
     collection: string;
     /** Record body. Validated against the resolved lexicon shape. */
     record: T;
@@ -249,16 +249,16 @@ export declare class Etzhayyim {
      * Plaintext is CBOR-encoded and sealed under XChaCha20-Poly1305 with a
      * fresh per-record symmetric key. The key is wrapped to each recipient
      * via the established Signal session (DID-bound per ADR-2605181100). The
-     * envelope is stored as `com.etzhayyim.encrypted.record`; one
-     * `com.etzhayyim.encrypted.keyWrap` is written per recipient.
+     * envelope is stored as `cloud.itonami.encrypted.record`; one
+     * `cloud.itonami.encrypted.keyWrap` is written per recipient.
      */
     encryptedWrite<T extends Record<string, unknown>>(opts: import("./encrypted.js").EncryptedWriteOpts<T>): Promise<import("./encrypted.js").EncryptedWriteReceipt>;
     /**
      * Read and decrypt encrypted records the caller has a read-cap for.
      *
-     * Enumerates `com.etzhayyim.encrypted.keyWrap` in the caller's own PDS,
+     * Enumerates `cloud.itonami.encrypted.keyWrap` in the caller's own PDS,
      * unwraps each key via the matching Signal session, and decrypts the
-     * referenced `com.etzhayyim.encrypted.record` envelopes.
+     * referenced `cloud.itonami.encrypted.record` envelopes.
      */
     encryptedRead<T>(opts: import("./encrypted.js").EncryptedReadOpts): Promise<import("./encrypted.js").EncryptedReadResponse<T>>;
 }

@@ -6,4 +6,4 @@
  * the public `@etzhayyim/sdk/l2` subpath and the substrate-boundary lint
  * rule's guidance text keep resolving unchanged.
  */
-export * from "@etzhayyim/base-l2/l2";
+export * from "@itonami/base-l2/l2";

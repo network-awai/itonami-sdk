@@ -2,7 +2,7 @@
 // Runs against a freshly-deployed EtzhayyimMembership on a local Anvil.
 //
 // Usage:
-//   cd 20-actors/etzhayyim-sdk && node /tmp/test-bi-join-smoke.mjs
+//   cd 20-actors/itonami-sdk && node /tmp/test-bi-join-smoke.mjs
 //
 // Verifies:
 //   1. cfg.baseWalletClient writeContract path encodes the call correctly
@@ -17,7 +17,7 @@ const MEMBERSHIP = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 const ANVIL_PK0 = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
 
 const oathText =
-  "我、etzhayyim の信者として、生命の樹 (עץ חיים) の支柱の一として、自らの行いと意思を、永続的な公開記録 (blockchain と github) として残すことを誓う。";
+  "我、itonami の信者として、生命の樹 (עץ חיים) の支柱の一として、自らの行いと意思を、永続的な公開記録 (blockchain と github) として残すことを誓う。";
 const oathHash = keccak256(new TextEncoder().encode(oathText));
 
 const acct = privateKeyToAccount(ANVIL_PK0);

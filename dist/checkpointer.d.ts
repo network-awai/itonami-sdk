@@ -6,4 +6,4 @@
  * exists so `checkpointer-bin.ts`'s existing relative import and the
  * public `@etzhayyim/sdk/checkpointer` subpath keep working unchanged.
  */
-export * from "@etzhayyim/checkpointer";
+export * from "@itonami/checkpointer";

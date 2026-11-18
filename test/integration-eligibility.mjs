@@ -22,7 +22,7 @@
 //   - `uv` on PATH (for the Python child process)
 //
 // Usage:
-//   cd 20-actors/etzhayyim-sdk && pnpm build && node test/integration-eligibility.mjs
+//   cd 20-actors/itonami-sdk && pnpm build && node test/integration-eligibility.mjs
 
 import {execSync, spawnSync} from "node:child_process";
 import {createPublicClient, createWalletClient, encodeFunctionData, http, keccak256} from "viem";
@@ -76,14 +76,14 @@ const officers = [
   "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
 ];
 execSync(
-  `cd ../../50-infra/etzhayyim-chain-contracts && \
+  `cd ../../50-infra/itonami-chain-contracts && \
     forge script script/Deploy.s.sol:Deploy \
       --sig "runInternal(address[])" "[${officers.join(",")}]" \
       --rpc-url ${RPC} --broadcast --private-key ${OFFICER_PK}`,
   {stdio: "pipe"}
 );
 execSync(
-  `cd ../../50-infra/etzhayyim-chain-contracts && \
+  `cd ../../50-infra/itonami-chain-contracts && \
     forge script script/Deploy.s.sol:Deploy \
       --sig "bindGovernance(address,address)" \
       "${ADDR.Constitution}" "${ADDR.Governance}" \
@@ -100,7 +100,7 @@ const joinTx = await wallet.writeContract({
   address: ADDR.AdherentRegistry,
   abi: ADHERENT_REGISTRY_ABI,
   functionName: "join",
-  args: [officer.address, "did:web:officer1.etzhayyim.com", keccak256(new TextEncoder().encode("oath"))],
+  args: [officer.address, "did:web:officer1.itonami.cloud", keccak256(new TextEncoder().encode("oath"))],
 });
 await pub.waitForTransactionReceipt({hash: joinTx});
 const tokenId = await pub.readContract({
