@@ -6,4 +6,4 @@
  * existing `@etzhayyim/sdk/did-signal` import (in-package and downstream
  * apps) keeps working unchanged.
  */
-export * from "@etzhayyim/pqh/did-signal";
+export * from "@itonami/pqh/did-signal";

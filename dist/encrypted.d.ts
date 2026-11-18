@@ -18,7 +18,7 @@ import { type PadOption, type PadScheme } from "./crypto.js";
 import { type SignedSignalIdentity } from "./did-signal.js";
 import { type HybridKemPublicBundle, type HybridKemSecretBundle } from "./pq.js";
 export interface ResolvedRecipientIdentity {
-    /** Publishable bundle stored in `com.etzhayyim.encrypted.signalIdentity`. */
+    /** Publishable bundle stored in `cloud.itonami.encrypted.signalIdentity`. */
     publishable: {
         signalIdentityKey: Uint8Array;
         signalRegistrationId: number;
@@ -43,7 +43,7 @@ export interface ResolvedRecipientIdentity {
  */
 export type RecipientIdentityResolver = (recipientDid: string) => Promise<ResolvedRecipientIdentity | null>;
 export interface EncryptedWriteOpts<T extends Record<string, unknown>> {
-    /** Lexicon NSID of the wrapper record. Default: com.etzhayyim.encrypted.record. */
+    /** Lexicon NSID of the wrapper record. Default: cloud.itonami.encrypted.record. */
     collection?: string;
     /** Lexicon NSID describing the inner plaintext shape (informational). */
     innerType?: string;

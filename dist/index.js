@@ -1,8 +1,8 @@
 /**
  * @etzhayyim/sdk
  *
- * kotoba substrate SDK for etzhayyim open religious-corp apps.
- * Per ADR-2605172000 — apps under etzhayyim/root MUST NOT depend on
+ * kotoba substrate SDK for itonami open religious-corp apps.
+ * Per ADR-2605172000 — apps under itonami/root MUST NOT depend on
  * RisingWave or any centralized off-chain DB. This SDK wraps the
  * primary substrate (AT MST + IPFS + Base L2 anchor) as one API.
  *
@@ -19,7 +19,7 @@ export class Etzhayyim {
         this.config = {
             did: config.did,
             pdsUrl: config.pdsUrl,
-            ipfsGateway: config.ipfsGateway ?? "https://ipfs.etzhayyim.com",
+            ipfsGateway: config.ipfsGateway ?? "https://ipfs.itonami.cloud",
             ipfsApiUrl: config.ipfsApiUrl,
             l2RpcUrl: config.l2RpcUrl ?? "https://mainnet.base.org",
             projectionDiscoverDid: config.projectionDiscoverDid,
@@ -65,7 +65,7 @@ export class Etzhayyim {
         const blobCids = {};
         if (opts.blobs && opts.blobs.size > 0) {
             if (!this.config.ipfsApiUrl) {
-                throw new Error("[etzhayyim-sdk] write(): blobs supplied but ipfsApiUrl not configured");
+                throw new Error("[itonami-sdk] write(): blobs supplied but ipfsApiUrl not configured");
             }
             for (const [field, blob] of opts.blobs.entries()) {
                 const pinned = await ipfsModule.pinBlob(this.config.ipfsApiUrl, blob);
@@ -152,11 +152,11 @@ export class Etzhayyim {
      */
     async uploadBlob(opts) {
         if (!this.config.ipfsApiUrl) {
-            throw new Error("[etzhayyim-sdk] uploadBlob(): ipfsApiUrl not configured");
+            throw new Error("[itonami-sdk] uploadBlob(): ipfsApiUrl not configured");
         }
         const sizeProbe = opts.data instanceof Blob ? opts.data.size : opts.data.byteLength;
         if (sizeProbe === 0) {
-            throw new Error("[etzhayyim-sdk] uploadBlob(): empty payload");
+            throw new Error("[itonami-sdk] uploadBlob(): empty payload");
         }
         const mediaType = opts.mediaType ??
             (opts.data instanceof Blob && opts.data.type
@@ -170,14 +170,14 @@ export class Etzhayyim {
         };
     }
     async verify(_recordUri) {
-        throw new Error("[etzhayyim-sdk] verify() not yet implemented. " +
+        throw new Error("[itonami-sdk] verify() not yet implemented. " +
             "TODO: (1) parse AT URI → DID/collection/rkey, (2) fetch record CID " +
             "from PDS, (3) traverse MST upward to the root, (4) query anchor " +
             "contract on Base L2 for the latest root containing this MST entry, " +
             "(5) return Merkle proof + on-chain anchor tx ref.");
     }
     async *subscribe(_opts) {
-        throw new Error("[etzhayyim-sdk] subscribe() not yet implemented. " +
+        throw new Error("[itonami-sdk] subscribe() not yet implemented. " +
             "TODO: open WebSocket to pds /xrpc/com.atproto.sync.subscribeRepos, " +
             "filter ops by opts.collections, yield events.");
     }
@@ -265,8 +265,8 @@ export class Etzhayyim {
      * Plaintext is CBOR-encoded and sealed under XChaCha20-Poly1305 with a
      * fresh per-record symmetric key. The key is wrapped to each recipient
      * via the established Signal session (DID-bound per ADR-2605181100). The
-     * envelope is stored as `com.etzhayyim.encrypted.record`; one
-     * `com.etzhayyim.encrypted.keyWrap` is written per recipient.
+     * envelope is stored as `cloud.itonami.encrypted.record`; one
+     * `cloud.itonami.encrypted.keyWrap` is written per recipient.
      */
     async encryptedWrite(opts) {
         const { encryptedWrite } = await import("./encrypted.js");
@@ -275,9 +275,9 @@ export class Etzhayyim {
     /**
      * Read and decrypt encrypted records the caller has a read-cap for.
      *
-     * Enumerates `com.etzhayyim.encrypted.keyWrap` in the caller's own PDS,
+     * Enumerates `cloud.itonami.encrypted.keyWrap` in the caller's own PDS,
      * unwraps each key via the matching Signal session, and decrypts the
-     * referenced `com.etzhayyim.encrypted.record` envelopes.
+     * referenced `cloud.itonami.encrypted.record` envelopes.
      */
     async encryptedRead(opts) {
         const { encryptedRead } = await import("./encrypted.js");

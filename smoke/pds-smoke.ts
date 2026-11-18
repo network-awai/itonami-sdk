@@ -1,15 +1,15 @@
 /**
- * SDK PDS smoke — pds.etzhayyim.com health + (optional) account list.
+ * SDK PDS smoke — pds.itonami.cloud health + (optional) account list.
  *
  * Usage:
  *   pnpm exec tsx smoke/pds-smoke.ts
  * Env:
- *   ETZ_PDS  (default https://pds.etzhayyim.com)
+ *   ETZ_PDS  (default https://pds.itonami.cloud)
  */
 
 import { health, resolvePds } from "../src/pds.js";
 
-const SERVICE = process.env.ETZ_PDS ?? "https://pds.etzhayyim.com";
+const SERVICE = process.env.ETZ_PDS ?? "https://pds.itonami.cloud";
 
 async function main() {
   console.log(`[smoke] service=${SERVICE}`);
@@ -19,8 +19,8 @@ async function main() {
 
   // Try resolving the PDS service DID via .well-known/did.json
   try {
-    const pds = await resolvePds("did:web:pds.etzhayyim.com");
-    console.log(`[smoke] resolvePds(did:web:pds.etzhayyim.com) → ${pds}`);
+    const pds = await resolvePds("did:web:pds.itonami.cloud");
+    console.log(`[smoke] resolvePds(did:web:pds.itonami.cloud) → ${pds}`);
   } catch (e) {
     console.log(`[smoke] resolvePds: ${(e as Error).message} (expected — did.json not yet published)`);
   }

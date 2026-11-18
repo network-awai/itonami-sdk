@@ -32,7 +32,7 @@ Allowed purposes (Charter Rider §2 & ADR-2605192115 §3):
 
 | Purpose | Use case |
 |---|---|
-| `donation` | Unrestricted gift to etzhayyim |
+| `donation` | Unrestricted gift to itonami |
 | `kisha` | Structured charitable contribution (Japan religious org) |
 | `grant` | Time-bound project funding |
 | `tithe` | 10% → Public Fund atomic auto-split |

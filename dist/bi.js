@@ -25,7 +25,7 @@ const FULFILLED_EVENT = parseAbiItem("event Fulfilled(bytes32 indexed ticketId, 
 /** geth-private ChainID per ADR-2605172300 §1. */
 export const ETZHAYYIM_PRIVATE_CHAIN_ID = 2605;
 /** Default chain RPC for geth-private. SDK consumer SHOULD override. */
-export const ETZHAYYIM_PRIVATE_RPC_DEFAULT = "https://chain.etzhayyim.com";
+export const ETZHAYYIM_PRIVATE_RPC_DEFAULT = "https://chain.itonami.cloud";
 /**
  * Perform the two-chain membership ritual per ADR-2605172700.
  *
@@ -34,7 +34,7 @@ export const ETZHAYYIM_PRIVATE_RPC_DEFAULT = "https://chain.etzhayyim.com";
  *             adherent is a 信者; the commitment is permanently on Base
  *             and (after Stage 3 PR merges) also on github.
  *
- *   Stage 2 — PDS: write a signed `com.etzhayyim.apps.etzhayyim.oath` record
+ *   Stage 2 — PDS: write a signed `cloud.itonami.apps.itonami.oath` record
  *             carrying the full oath text, the DID signature, the Base
  *             chainId + Joined tx hash, the github commit SHA, and the
  *             joinedAt timestamp. The record's CID is the
@@ -64,16 +64,16 @@ export async function join(opts, cfg) {
     // ─── precondition checks (kept as runtime errors so the SDK fails
     //     loudly rather than producing partial state silently) ─────────
     if (!cfg.membershipAddress) {
-        throw new Error("[etzhayyim-sdk/bi] join: cfg.membershipAddress required (Base L2)");
+        throw new Error("[itonami-sdk/bi] join: cfg.membershipAddress required (Base L2)");
     }
     if (!cfg.registryAddress) {
-        throw new Error("[etzhayyim-sdk/bi] join: cfg.registryAddress required (geth-private)");
+        throw new Error("[itonami-sdk/bi] join: cfg.registryAddress required (geth-private)");
     }
     if (!opts.holder || !/^0x[0-9a-fA-F]{40}$/.test(opts.holder)) {
-        throw new Error("[etzhayyim-sdk/bi] join: holder must be a 0x-prefixed address");
+        throw new Error("[itonami-sdk/bi] join: holder must be a 0x-prefixed address");
     }
     if (!opts.oathHash || !/^0x[0-9a-fA-F]{64}$/.test(opts.oathHash)) {
-        throw new Error("[etzhayyim-sdk/bi] join: oathHash must be a 0x-prefixed 32-byte hex");
+        throw new Error("[itonami-sdk/bi] join: oathHash must be a 0x-prefixed 32-byte hex");
     }
     // ─── Stage 1: Base L2 EtzhayyimMembership.join ──────────────────────
     //   Reuses the same paymaster-sponsored ERC-4337 path as pay.ts.
@@ -88,7 +88,7 @@ export async function join(opts, cfg) {
         oathHash: opts.oathHash,
         githubUsername: opts.githubUsername ?? "",
     }, cfg);
-    // ─── Stage 2: AT Record (com.etzhayyim.apps.etzhayyim.oath) ──────────────
+    // ─── Stage 2: AT Record (cloud.itonami.apps.itonami.oath) ──────────────
     // Stage 2 is optional in the same sense as Stage 4: if no PDS agent
     // is wired we cannot write the cross-substrate index, but the 信者
     // commitment on Base (Stage 1) is already permanent. Caller gets back
@@ -156,7 +156,7 @@ async function _baseJoin(args, cfg) {
     if (cfg.sponsored) {
         const sender = cfg.sponsored.smartAccount.address.toLowerCase();
         if (sender !== args.holder.toLowerCase()) {
-            throw new Error(`[etzhayyim-sdk/bi] _baseJoin (sponsored): smartAccount address ${sender} ` +
+            throw new Error(`[itonami-sdk/bi] _baseJoin (sponsored): smartAccount address ${sender} ` +
                 `does not match opts.holder ${args.holder.toLowerCase()}; ` +
                 "EtzhayyimMembership.join binds msg.sender = member.");
         }
@@ -169,16 +169,16 @@ async function _baseJoin(args, cfg) {
     }
     // ─── EOA path (fallback) ───────────────────────────────────────
     if (!cfg.baseWalletClient) {
-        throw new Error("[etzhayyim-sdk/bi] _baseJoin: cfg.baseWalletClient required " +
+        throw new Error("[itonami-sdk/bi] _baseJoin: cfg.baseWalletClient required " +
             "(or wire cfg.sponsored for ERC-4337 paymaster path).");
     }
     if (!cfg.baseWalletClient.account) {
-        throw new Error("[etzhayyim-sdk/bi] _baseJoin: walletClient has no account");
+        throw new Error("[itonami-sdk/bi] _baseJoin: walletClient has no account");
     }
     const pub = createPublicClient({ transport: http(args.rpcUrl) });
     const sender = cfg.baseWalletClient.account.address.toLowerCase();
     if (sender !== args.holder.toLowerCase()) {
-        throw new Error(`[etzhayyim-sdk/bi] _baseJoin: walletClient account ${sender} ` +
+        throw new Error(`[itonami-sdk/bi] _baseJoin: walletClient account ${sender} ` +
             `does not match opts.holder ${args.holder.toLowerCase()}; ` +
             "EtzhayyimMembership.join binds msg.sender = member.");
     }
@@ -192,29 +192,29 @@ async function _baseJoin(args, cfg) {
     });
     const receipt = await pub.waitForTransactionReceipt({ hash });
     if (receipt.status !== "success") {
-        throw new Error(`[etzhayyim-sdk/bi] _baseJoin: tx ${hash} reverted; check that the ` +
+        throw new Error(`[itonami-sdk/bi] _baseJoin: tx ${hash} reverted; check that the ` +
             "wallet is not already a 信者 (EtzhayyimMembership.AlreadyMember)");
     }
     return hash;
 }
 /** Canonical oath text per ADR-2605172600 (both languages equivalent). */
 export const CANONICAL_OATH_TEXT = [
-    "我、etzhayyim の信者として、生命の樹 (עץ חיים) の支柱の一として、自らの行いと意思を、永続的な公開記録 (blockchain と github) として残すことを誓う。",
+    "我、itonami の信者として、生命の樹 (עץ חיים) の支柱の一として、自らの行いと意思を、永続的な公開記録 (blockchain と github) として残すことを誓う。",
     "",
-    "I, as a 信者 (follower) of etzhayyim, as one of the pillars of the Tree of Life (עץ חיים), swear to leave my acts and intentions as a permanent public record (blockchain and github).",
+    "I, as a 信者 (follower) of itonami, as one of the pillars of the Tree of Life (עץ חיים), swear to leave my acts and intentions as a permanent public record (blockchain and github).",
 ].join("\n");
 async function _writeOathRecord(args, cfg) {
     if (!cfg.pdsAgent) {
-        throw new Error("[etzhayyim-sdk/bi] _writeOathRecord: cfg.pdsAgent required " +
+        throw new Error("[itonami-sdk/bi] _writeOathRecord: cfg.pdsAgent required " +
             "(AtpAgent with an active session bound to the adherent's DID)");
     }
     const session = cfg.pdsAgent.session;
     if (!session || session.did !== args.did) {
-        throw new Error("[etzhayyim-sdk/bi] _writeOathRecord: pdsAgent session DID " +
+        throw new Error("[itonami-sdk/bi] _writeOathRecord: pdsAgent session DID " +
             `(${session?.did ?? "none"}) does not match opts.did ${args.did}`);
     }
     // The record body is the lexicon-defined shape. The lexicon itself
-    // lives at 00-contracts/lexicons/com/etzhayyim/apps/etzhayyim/oath.json
+    // lives at 00-contracts/lexicons/cloud/itonami/apps/itonami/oath.json
     // (per ADR-2605172600 § Phase 1).
     const record = {
         $type: OATH_RECORD_NSID,
@@ -261,20 +261,20 @@ async function _officerRelayJoin(args) {
     });
     if (!res.ok) {
         const text = await res.text();
-        throw new Error(`[etzhayyim-sdk/bi] officer relayer ${args.relayer.url} returned ${res.status}: ${text}`);
+        throw new Error(`[itonami-sdk/bi] officer relayer ${args.relayer.url} returned ${res.status}: ${text}`);
     }
     const out = (await res.json());
     return { tokenId: BigInt(out.tokenId), txHash: out.txHash };
 }
 export async function attest(opts, cfg) {
     if (!cfg.privateWalletClient || !cfg.privateWalletClient.account) {
-        throw new Error("[etzhayyim-sdk/bi] attest: cfg.privateWalletClient required");
+        throw new Error("[itonami-sdk/bi] attest: cfg.privateWalletClient required");
     }
     if (!cfg.registryAddress) {
-        throw new Error("[etzhayyim-sdk/bi] attest: cfg.registryAddress required");
+        throw new Error("[itonami-sdk/bi] attest: cfg.registryAddress required");
     }
     if (!cfg.privateRpcUrl) {
-        throw new Error("[etzhayyim-sdk/bi] attest: cfg.privateRpcUrl required");
+        throw new Error("[itonami-sdk/bi] attest: cfg.privateRpcUrl required");
     }
     const wallet = cfg.privateWalletClient;
     const account = wallet.account;
@@ -293,7 +293,7 @@ export async function attest(opts, cfg) {
     });
     const receipt = await privatePub.waitForTransactionReceipt({ hash: txHash });
     if (receipt.status !== "success") {
-        throw new Error(`[etzhayyim-sdk/bi] attest: tx ${txHash} reverted`);
+        throw new Error(`[itonami-sdk/bi] attest: tx ${txHash} reverted`);
     }
     // Best-effort AT Record write. Skipped silently when no PDS agent
     // is bound — the on-chain Attested event remains the canonical
@@ -302,7 +302,7 @@ export async function attest(opts, cfg) {
     let recordUri = "";
     if (cfg.pdsAgent?.session) {
         try {
-            const collection = `com.etzhayyim.event.${opts.eventType}`;
+            const collection = `cloud.itonami.event.${opts.eventType}`;
             const created = await cfg.pdsAgent.com.atproto.repo.createRecord({
                 repo: cfg.pdsAgent.session.did,
                 collection,
@@ -325,13 +325,13 @@ export async function attest(opts, cfg) {
 }
 export async function status(tokenId, cfg) {
     if (!cfg.privateRpcUrl) {
-        throw new Error("[etzhayyim-sdk/bi] status: cfg.privateRpcUrl required");
+        throw new Error("[itonami-sdk/bi] status: cfg.privateRpcUrl required");
     }
     if (!cfg.registryAddress) {
-        throw new Error("[etzhayyim-sdk/bi] status: cfg.registryAddress required");
+        throw new Error("[itonami-sdk/bi] status: cfg.registryAddress required");
     }
     if (!cfg.kishaStreamAddress) {
-        throw new Error("[etzhayyim-sdk/bi] status: cfg.kishaStreamAddress required");
+        throw new Error("[itonami-sdk/bi] status: cfg.kishaStreamAddress required");
     }
     const privatePub = createPublicClient({ transport: http(cfg.privateRpcUrl) });
     const [record, baseRatePerDay, accruedNow, multiplierBps] = await Promise.all([
@@ -416,16 +416,16 @@ export async function status(tokenId, cfg) {
  */
 export async function setPhenotype(input, cfg) {
     if (!cfg.privateWalletClient || !cfg.privateWalletClient.account) {
-        throw new Error("[etzhayyim-sdk/bi] setPhenotype: cfg.privateWalletClient required (cell key)");
+        throw new Error("[itonami-sdk/bi] setPhenotype: cfg.privateWalletClient required (cell key)");
     }
     if (!cfg.phenotypeAddress) {
-        throw new Error("[etzhayyim-sdk/bi] setPhenotype: cfg.phenotypeAddress required");
+        throw new Error("[itonami-sdk/bi] setPhenotype: cfg.phenotypeAddress required");
     }
     if (!cfg.privateRpcUrl) {
-        throw new Error("[etzhayyim-sdk/bi] setPhenotype: cfg.privateRpcUrl required");
+        throw new Error("[itonami-sdk/bi] setPhenotype: cfg.privateRpcUrl required");
     }
     if (input.bps < 0 || input.bps > 0xffff) {
-        throw new Error(`[etzhayyim-sdk/bi] setPhenotype: bps ${input.bps} out of uint16 range`);
+        throw new Error(`[itonami-sdk/bi] setPhenotype: bps ${input.bps} out of uint16 range`);
     }
     const wallet = cfg.privateWalletClient;
     const cell = wallet.account.address;
@@ -489,7 +489,7 @@ export async function setPhenotype(input, cfg) {
     });
     const receipt = await privatePub.waitForTransactionReceipt({ hash: txHash });
     if (receipt.status !== "success") {
-        throw new Error(`[etzhayyim-sdk/bi] setPhenotype: tx ${txHash} reverted`);
+        throw new Error(`[itonami-sdk/bi] setPhenotype: tx ${txHash} reverted`);
     }
     // 5. Parse MultiplierSet.
     const log = receipt.logs.find((l) => l.address.toLowerCase() === cfg.phenotypeAddress.toLowerCase());
@@ -510,19 +510,19 @@ export async function setPhenotype(input, cfg) {
 export async function claim(opts, cfg) {
     // ─── Precondition checks ───────────────────────────────────────────
     if (!cfg.privateWalletClient) {
-        throw new Error("[etzhayyim-sdk/bi] claim: cfg.privateWalletClient required (geth-private wallet)");
+        throw new Error("[itonami-sdk/bi] claim: cfg.privateWalletClient required (geth-private wallet)");
     }
     if (!cfg.privateWalletClient.account) {
-        throw new Error("[etzhayyim-sdk/bi] claim: privateWalletClient has no account");
+        throw new Error("[itonami-sdk/bi] claim: privateWalletClient has no account");
     }
     if (!cfg.kishaStreamAddress) {
-        throw new Error("[etzhayyim-sdk/bi] claim: cfg.kishaStreamAddress required");
+        throw new Error("[itonami-sdk/bi] claim: cfg.kishaStreamAddress required");
     }
     if (!cfg.kishaPayoutAddress) {
-        throw new Error("[etzhayyim-sdk/bi] claim: cfg.kishaPayoutAddress required (for fulfillment polling)");
+        throw new Error("[itonami-sdk/bi] claim: cfg.kishaPayoutAddress required (for fulfillment polling)");
     }
     if (!cfg.privateRpcUrl) {
-        throw new Error("[etzhayyim-sdk/bi] claim: cfg.privateRpcUrl required");
+        throw new Error("[itonami-sdk/bi] claim: cfg.privateRpcUrl required");
     }
     const privateWallet = cfg.privateWalletClient;
     const account = privateWallet.account;
@@ -540,13 +540,13 @@ export async function claim(opts, cfg) {
     });
     const privateReceipt = await privatePub.waitForTransactionReceipt({ hash: privateTxHash });
     if (privateReceipt.status !== "success") {
-        throw new Error(`[etzhayyim-sdk/bi] claim: KishaStream.claim tx ${privateTxHash} reverted; ` +
+        throw new Error(`[itonami-sdk/bi] claim: KishaStream.claim tx ${privateTxHash} reverted; ` +
             "likely NotHolder / TokenRevoked / NotActive / NothingAccrued — see KISHA_STREAM_ABI for typed errors");
     }
     // ─── Stage 2: decode ClaimTicketIssued ─────────────────────────────
     const ticketLog = privateReceipt.logs.find((l) => l.address.toLowerCase() === cfg.kishaStreamAddress.toLowerCase());
     if (!ticketLog) {
-        throw new Error("[etzhayyim-sdk/bi] claim: ClaimTicketIssued log missing from receipt");
+        throw new Error("[itonami-sdk/bi] claim: ClaimTicketIssued log missing from receipt");
     }
     const decoded = decodeEventLog({
         abi: KISHA_STREAM_ABI,
@@ -573,7 +573,7 @@ export async function claim(opts, cfg) {
 async function _waitForFulfillment(args) {
     const cfg = args.cfg;
     if (!cfg.kishaPayoutAddress) {
-        throw new Error("[etzhayyim-sdk/bi] _waitForFulfillment: cfg.kishaPayoutAddress required");
+        throw new Error("[itonami-sdk/bi] _waitForFulfillment: cfg.kishaPayoutAddress required");
     }
     const baseRpc = cfg.baseRpcUrl ?? "https://mainnet.base.org";
     const basePub = createPublicClient({ transport: http(baseRpc) });
@@ -593,7 +593,7 @@ async function _waitForFulfillment(args) {
         });
         if (logs.length > 0) {
             const hit = logs[0];
-            // Optional Stage 5: write com.etzhayyim.apps.payment.kisha record if the
+            // Optional Stage 5: write cloud.itonami.apps.payment.kisha record if the
             // SDK has a PDS agent. Skipped silently when no agent is bound —
             // the public audit record then comes only from the on-chain
             // Fulfilled event.
@@ -602,9 +602,9 @@ async function _waitForFulfillment(args) {
                 try {
                     const created = await cfg.pdsAgent.com.atproto.repo.createRecord({
                         repo: cfg.pdsAgent.session.did,
-                        collection: "com.etzhayyim.apps.payment.kisha",
+                        collection: "cloud.itonami.apps.payment.kisha",
                         record: {
-                            $type: "com.etzhayyim.apps.payment.kisha",
+                            $type: "cloud.itonami.apps.payment.kisha",
                             ticketId: args.ticketId,
                             privateTxHash: args.privateTxHash,
                             baseTxHash: hit.transactionHash,
@@ -627,7 +627,7 @@ async function _waitForFulfillment(args) {
         }
         await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
     }
-    throw new Error(`[etzhayyim-sdk/bi] claim: fulfillment for ticket ${args.ticketId} did not land before expiry. ` +
+    throw new Error(`[itonami-sdk/bi] claim: fulfillment for ticket ${args.ticketId} did not land before expiry. ` +
         "Relayer is either down, throttled, or the ticket was rejected. " +
         "Re-call claim() to mint a fresh ticket.");
 }
@@ -648,13 +648,13 @@ async function _waitForFulfillment(args) {
  */
 export async function propose(opts, cfg) {
     if (!cfg.privateWalletClient || !cfg.privateWalletClient.account) {
-        throw new Error("[etzhayyim-sdk/bi] propose: cfg.privateWalletClient required");
+        throw new Error("[itonami-sdk/bi] propose: cfg.privateWalletClient required");
     }
     if (!cfg.privateRpcUrl) {
-        throw new Error("[etzhayyim-sdk/bi] propose: cfg.privateRpcUrl required");
+        throw new Error("[itonami-sdk/bi] propose: cfg.privateRpcUrl required");
     }
     if (!cfg.constitutionAddress) {
-        throw new Error("[etzhayyim-sdk/bi] propose: cfg.constitutionAddress required");
+        throw new Error("[itonami-sdk/bi] propose: cfg.constitutionAddress required");
     }
     // Locate Governance via Constitution.governance() so callers don't
     // have to pass the address separately — we deliberately bind to the
@@ -666,7 +666,7 @@ export async function propose(opts, cfg) {
         functionName: "governance",
     }));
     if (governanceAddr === "0x0000000000000000000000000000000000000000") {
-        throw new Error("[etzhayyim-sdk/bi] propose: Constitution.governance() is zero — bind it first via Deploy.bindGovernance");
+        throw new Error("[itonami-sdk/bi] propose: Constitution.governance() is zero — bind it first via Deploy.bindGovernance");
     }
     // Encode the constitutional change as a single setMutable call.
     const key = keccak256(toBytes(opts.change));
@@ -688,11 +688,11 @@ export async function propose(opts, cfg) {
     });
     const receipt = await privatePub.waitForTransactionReceipt({ hash: txHash });
     if (receipt.status !== "success") {
-        throw new Error(`[etzhayyim-sdk/bi] propose: tx ${txHash} reverted; likely NotAdherent / NotActive`);
+        throw new Error(`[itonami-sdk/bi] propose: tx ${txHash} reverted; likely NotAdherent / NotActive`);
     }
     const log = receipt.logs.find((l) => l.address.toLowerCase() === governanceAddr.toLowerCase());
     if (!log) {
-        throw new Error("[etzhayyim-sdk/bi] propose: ProposalCreated log missing");
+        throw new Error("[itonami-sdk/bi] propose: ProposalCreated log missing");
     }
     const decoded = decodeEventLog({
         abi: GOVERNANCE_ABI,
@@ -704,13 +704,13 @@ export async function propose(opts, cfg) {
 }
 export async function vote(proposalId, choice, cfg) {
     if (!cfg.privateWalletClient || !cfg.privateWalletClient.account) {
-        throw new Error("[etzhayyim-sdk/bi] vote: cfg.privateWalletClient required");
+        throw new Error("[itonami-sdk/bi] vote: cfg.privateWalletClient required");
     }
     if (!cfg.privateRpcUrl) {
-        throw new Error("[etzhayyim-sdk/bi] vote: cfg.privateRpcUrl required");
+        throw new Error("[itonami-sdk/bi] vote: cfg.privateRpcUrl required");
     }
     if (!cfg.constitutionAddress) {
-        throw new Error("[etzhayyim-sdk/bi] vote: cfg.constitutionAddress required");
+        throw new Error("[itonami-sdk/bi] vote: cfg.constitutionAddress required");
     }
     const privatePub = createPublicClient({ transport: http(cfg.privateRpcUrl) });
     const governanceAddr = (await privatePub.readContract({
@@ -729,7 +729,7 @@ export async function vote(proposalId, choice, cfg) {
     });
     const receipt = await privatePub.waitForTransactionReceipt({ hash: txHash });
     if (receipt.status !== "success") {
-        throw new Error(`[etzhayyim-sdk/bi] vote: tx ${txHash} reverted (likely AlreadyVoted / NotActive)`);
+        throw new Error(`[itonami-sdk/bi] vote: tx ${txHash} reverted (likely AlreadyVoted / NotActive)`);
     }
 }
 /**
@@ -738,7 +738,7 @@ export async function vote(proposalId, choice, cfg) {
  */
 export async function proposalState(proposalId, cfg) {
     if (!cfg.privateRpcUrl || !cfg.constitutionAddress) {
-        throw new Error("[etzhayyim-sdk/bi] proposalState: privateRpcUrl + constitutionAddress required");
+        throw new Error("[itonami-sdk/bi] proposalState: privateRpcUrl + constitutionAddress required");
     }
     const privatePub = createPublicClient({ transport: http(cfg.privateRpcUrl) });
     const governanceAddr = (await privatePub.readContract({

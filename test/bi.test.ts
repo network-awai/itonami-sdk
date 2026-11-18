@@ -71,7 +71,7 @@ describe("ABI fragments", () => {
   });
 
   it("OATH_RECORD_NSID matches the lexicon path", () => {
-    expect(OATH_RECORD_NSID).toBe("com.etzhayyim.apps.etzhayyim.oath");
+    expect(OATH_RECORD_NSID).toBe("cloud.itonami.apps.itonami.oath");
   });
 });
 
@@ -215,7 +215,7 @@ describe("claim() preconditions", () => {
 
 describe("canonical oath text", () => {
   it("contains both languages and is non-empty", () => {
-    expect(CANONICAL_OATH_TEXT).toContain("etzhayyim の信者");
+    expect(CANONICAL_OATH_TEXT).toContain("itonami の信者");
     expect(CANONICAL_OATH_TEXT).toContain("Tree of Life");
     expect(CANONICAL_OATH_TEXT.length).toBeGreaterThan(100);
   });

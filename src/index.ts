@@ -1,8 +1,8 @@
 /**
  * @etzhayyim/sdk
  *
- * kotoba substrate SDK for etzhayyim open religious-corp apps.
- * Per ADR-2605172000 — apps under etzhayyim/root MUST NOT depend on
+ * kotoba substrate SDK for itonami open religious-corp apps.
+ * Per ADR-2605172000 — apps under itonami/root MUST NOT depend on
  * RisingWave or any centralized off-chain DB. This SDK wraps the
  * primary substrate (AT MST + IPFS + Base L2 anchor) as one API.
  *
@@ -22,7 +22,7 @@ export interface EtzhayyimConfig {
   /** PDS HTTP endpoint. Default: from DID document `service[type=AtprotoPersonalDataServer]`. */
   pdsUrl?: string;
 
-  /** IPFS HTTP gateway for blob fetch. Default: `https://ipfs.etzhayyim.com`. */
+  /** IPFS HTTP gateway for blob fetch. Default: `https://ipfs.itonami.cloud`. */
   ipfsGateway?: string;
 
   /** IPFS HTTP API for pin. Required for write operations with blobs. */
@@ -41,7 +41,7 @@ export interface EtzhayyimConfig {
   projectionDiscoverDid?: string;
 
   /**
-   * kotoba server base URL (e.g. `https://kotoba.etzhayyim.com` or
+   * kotoba server base URL (e.g. `https://kotoba.itonami.cloud` or
    * `http://127.0.0.1:8077`). When set, `yoro-kotoba` feed/graph/actor reads
    * resolve through the kotoba Datom log (`datomic.datoms`) — the canonical
    * read path (ADR-2606013200, supersedes the kotoba-datomic-projection leg).
@@ -92,7 +92,7 @@ export interface Signer {
 // ─── Write API (replaces SQL INSERT) ────────────────────────────────
 
 export interface WriteOpts<T extends Record<string, unknown>> {
-  /** Lexicon NSID. e.g. `com.etzhayyim.apps.openIsco.occupation`. */
+  /** Lexicon NSID. e.g. `cloud.itonami.apps.openIsco.occupation`. */
   collection: string;
 
   /** Record body. Validated against the resolved lexicon shape. */
@@ -266,7 +266,7 @@ export class Etzhayyim {
     this.config = {
       did: config.did,
       pdsUrl: config.pdsUrl,
-      ipfsGateway: config.ipfsGateway ?? "https://ipfs.etzhayyim.com",
+      ipfsGateway: config.ipfsGateway ?? "https://ipfs.itonami.cloud",
       ipfsApiUrl: config.ipfsApiUrl,
       l2RpcUrl: config.l2RpcUrl ?? "https://mainnet.base.org",
       projectionDiscoverDid: config.projectionDiscoverDid,
@@ -321,7 +321,7 @@ export class Etzhayyim {
     if (opts.blobs && opts.blobs.size > 0) {
       if (!this.config.ipfsApiUrl) {
         throw new Error(
-          "[etzhayyim-sdk] write(): blobs supplied but ipfsApiUrl not configured"
+          "[itonami-sdk] write(): blobs supplied but ipfsApiUrl not configured"
         );
       }
       for (const [field, blob] of opts.blobs.entries()) {
@@ -446,13 +446,13 @@ export class Etzhayyim {
   async uploadBlob(opts: UploadBlobOpts): Promise<UploadBlobReceipt> {
     if (!this.config.ipfsApiUrl) {
       throw new Error(
-        "[etzhayyim-sdk] uploadBlob(): ipfsApiUrl not configured"
+        "[itonami-sdk] uploadBlob(): ipfsApiUrl not configured"
       );
     }
     const sizeProbe =
       opts.data instanceof Blob ? opts.data.size : opts.data.byteLength;
     if (sizeProbe === 0) {
-      throw new Error("[etzhayyim-sdk] uploadBlob(): empty payload");
+      throw new Error("[itonami-sdk] uploadBlob(): empty payload");
     }
     const mediaType =
       opts.mediaType ??
@@ -469,7 +469,7 @@ export class Etzhayyim {
 
   async verify(_recordUri: string): Promise<VerifyResult> {
     throw new Error(
-      "[etzhayyim-sdk] verify() not yet implemented. " +
+      "[itonami-sdk] verify() not yet implemented. " +
         "TODO: (1) parse AT URI → DID/collection/rkey, (2) fetch record CID " +
         "from PDS, (3) traverse MST upward to the root, (4) query anchor " +
         "contract on Base L2 for the latest root containing this MST entry, " +
@@ -479,7 +479,7 @@ export class Etzhayyim {
 
   async *subscribe<T>(_opts: SubscribeOpts): AsyncGenerator<SubscribeEvent<T>> {
     throw new Error(
-      "[etzhayyim-sdk] subscribe() not yet implemented. " +
+      "[itonami-sdk] subscribe() not yet implemented. " +
         "TODO: open WebSocket to pds /xrpc/com.atproto.sync.subscribeRepos, " +
         "filter ops by opts.collections, yield events."
     );
@@ -587,8 +587,8 @@ export class Etzhayyim {
    * Plaintext is CBOR-encoded and sealed under XChaCha20-Poly1305 with a
    * fresh per-record symmetric key. The key is wrapped to each recipient
    * via the established Signal session (DID-bound per ADR-2605181100). The
-   * envelope is stored as `com.etzhayyim.encrypted.record`; one
-   * `com.etzhayyim.encrypted.keyWrap` is written per recipient.
+   * envelope is stored as `cloud.itonami.encrypted.record`; one
+   * `cloud.itonami.encrypted.keyWrap` is written per recipient.
    */
   async encryptedWrite<T extends Record<string, unknown>>(
     opts: import("./encrypted.js").EncryptedWriteOpts<T>
@@ -600,9 +600,9 @@ export class Etzhayyim {
   /**
    * Read and decrypt encrypted records the caller has a read-cap for.
    *
-   * Enumerates `com.etzhayyim.encrypted.keyWrap` in the caller's own PDS,
+   * Enumerates `cloud.itonami.encrypted.keyWrap` in the caller's own PDS,
    * unwraps each key via the matching Signal session, and decrypts the
-   * referenced `com.etzhayyim.encrypted.record` envelopes.
+   * referenced `cloud.itonami.encrypted.record` envelopes.
    */
   async encryptedRead<T>(
     opts: import("./encrypted.js").EncryptedReadOpts

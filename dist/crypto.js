@@ -6,4 +6,4 @@
  * existing `@etzhayyim/sdk/crypto` import (in-package and downstream apps)
  * keeps working unchanged.
  */
-export * from "@etzhayyim/pqh/crypto";
+export * from "@itonami/pqh/crypto";

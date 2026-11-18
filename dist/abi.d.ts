@@ -2,10 +2,10 @@
  * @etzhayyim/sdk/abi — minimal ABI fragments for the contracts the SDK
  * touches. Hand-pinned to the deployed bytecode of:
  *
- *   - 50-infra/etzhayyim-membership-contract/src/EtzhayyimMembership.sol
- *   - 50-infra/etzhayyim-chain-contracts/src/AdherentRegistry.sol
- *   - 50-infra/etzhayyim-chain-contracts/src/KishaStream.sol
- *   - 50-infra/etzhayyim-chain-contracts/src/base/KishaPayout.sol
+ *   - 50-infra/itonami-membership-contract/src/EtzhayyimMembership.sol
+ *   - 50-infra/itonami-chain-contracts/src/AdherentRegistry.sol
+ *   - 50-infra/itonami-chain-contracts/src/KishaStream.sol
+ *   - 50-infra/itonami-chain-contracts/src/base/KishaPayout.sol
  *
  * Only the functions / events the SDK calls or reads are included; full
  * ABIs ship with the contract artifacts and can be loaded from there
@@ -649,4 +649,4 @@ export declare const VOTE_CHOICE: {
     readonly for: 1;
     readonly abstain: 2;
 };
-export declare const OATH_RECORD_NSID: "com.etzhayyim.apps.etzhayyim.oath";
+export declare const OATH_RECORD_NSID: "cloud.itonami.apps.itonami.oath";

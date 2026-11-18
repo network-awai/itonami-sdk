@@ -3,7 +3,7 @@
  *
  * Per ADR-2605192115 §3, external fiat payment is prohibited. Allowed payment
  * purposes are:
- *   - donation: unrestricted gift to etzhayyim
+ *   - donation: unrestricted gift to itonami
  *   - kisha: structured charitable contribution (religious organization, Japan)
  *   - grant: time-bound project funding
  *   - tithe: 10% → Public Fund atomic auto-split via TitheRouter.sol
@@ -50,12 +50,12 @@ export async function donate(opts, cfg) {
     // with USDC_ABI.transfer encoded to the paymaster-wrapped UserOperation.
     // For now, fallback to v0.1 EOA path.
     if (cfg.sponsored) {
-        console.warn("[etzhayyim-sdk/donate] sponsored path is v0.2 stub; falling back to EOA. " +
+        console.warn("[itonami-sdk/donate] sponsored path is v0.2 stub; falling back to EOA. " +
             "SmartAccount routing via sponsoredWriteContract is pending implementation.");
     }
     // ─── v0.1 fallback: EOA USDC.transfer ────────────────────────
     if (!cfg.privateKey) {
-        throw new Error("[etzhayyim-sdk/donate] Either cfg.privateKey (v0.1 EOA) or cfg.sponsored " +
+        throw new Error("[itonami-sdk/donate] Either cfg.privateKey (v0.1 EOA) or cfg.sponsored " +
             "(v0.2 ERC-4337 SmartAccount) must be provided.");
     }
     const payClient = new PayClient({
@@ -67,7 +67,7 @@ export async function donate(opts, cfg) {
         to: opts.to,
         amount: amountUsdc,
         reason: {
-            collection: "com.etzhayyim.apps.payment.sent",
+            collection: "cloud.itonami.apps.payment.sent",
             // mapDonationPurpose collapses v0.2 purposes onto v0.1 PaymentPurpose
             // ("donation" placeholder) until pay.ts widens its enum (v0.3 TODO).
             purpose: mapDonationPurpose(opts.purpose),

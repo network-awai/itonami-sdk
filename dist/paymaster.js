@@ -5,4 +5,4 @@
  * TS unchanged) per ADR-2607011940 / ADR-2606302300. This shim exists so
  * the public `@etzhayyim/sdk/paymaster` subpath keeps resolving unchanged.
  */
-export * from "@etzhayyim/base-l2/paymaster";
+export * from "@itonami/base-l2/paymaster";

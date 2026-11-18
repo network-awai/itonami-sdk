@@ -3,7 +3,7 @@
  *
  * Per ADR-2605192115 §3, external fiat payment is prohibited. Allowed payment
  * purposes are:
- *   - donation: unrestricted gift to etzhayyim
+ *   - donation: unrestricted gift to itonami
  *   - kisha: structured charitable contribution (religious organization, Japan)
  *   - grant: time-bound project funding
  *   - tithe: 10% → Public Fund atomic auto-split via TitheRouter.sol

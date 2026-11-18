@@ -22,7 +22,7 @@ import type { PaymentReceipt } from "./pay.js";
 /** geth-private ChainID per ADR-2605172300 §1. */
 export declare const ETZHAYYIM_PRIVATE_CHAIN_ID: 2605;
 /** Default chain RPC for geth-private. SDK consumer SHOULD override. */
-export declare const ETZHAYYIM_PRIVATE_RPC_DEFAULT: "https://chain.etzhayyim.com";
+export declare const ETZHAYYIM_PRIVATE_RPC_DEFAULT: "https://chain.itonami.cloud";
 /** Reserved attestation event types. Extensible via Constitution. */
 export type AttestationEventType = "prayer" | "study" | "service" | "donation";
 export interface BIConfig {
@@ -92,7 +92,7 @@ export interface BIConfig {
     sponsored?: SponsoredBundle;
 }
 export interface JoinOpts {
-    /** Adherent DID (did:web / did:plc / did:etzhayyim). */
+    /** Adherent DID (did:web / did:plc / did:itonami). */
     did: string;
     /**
      * Adherent's wallet address. Same address controls both chains
@@ -102,7 +102,7 @@ export interface JoinOpts {
     holder: `0x${string}`;
     /**
      * keccak256 of the canonical oath text. The text itself is fixed by
-     * ADR-2605172600's lexicon (`com.etzhayyim.apps.etzhayyim.oath`). The
+     * ADR-2605172600's lexicon (`cloud.itonami.apps.itonami.oath`). The
      * adherent's signature over the text is carried inside the AT Record
      * written in Stage 2; only the hash goes on-chain.
      */
@@ -115,7 +115,7 @@ export interface JoinOpts {
     githubUsername?: string;
     /**
      * Optional reference to the MEMBERS.md PR or merged commit SHA that
-     * the adherent will (or has) opened against `etzhayyim/root`. Included
+     * the adherent will (or has) opened against `itonami/root`. Included
      * verbatim in the AT Record body so a single document indexes both
      * chains and the github commit.
      */
@@ -128,7 +128,7 @@ export interface JoinResult {
     membershipTxHash: `0x${string}`;
     /** geth-private tx hash of the `AdherentRegistry.Joined` event. */
     adherentTxHash: `0x${string}`;
-    /** AT URI of the `com.etzhayyim.apps.etzhayyim.oath` record that bridges
+    /** AT URI of the `cloud.itonami.apps.itonami.oath` record that bridges
      *  both chains + the github commit. */
     oathRecordUri: string;
     /** True if both chain legs landed; false if only the Base 信者 leg
@@ -144,7 +144,7 @@ export interface JoinResult {
  *             adherent is a 信者; the commitment is permanently on Base
  *             and (after Stage 3 PR merges) also on github.
  *
- *   Stage 2 — PDS: write a signed `com.etzhayyim.apps.etzhayyim.oath` record
+ *   Stage 2 — PDS: write a signed `cloud.itonami.apps.itonami.oath` record
  *             carrying the full oath text, the DID signature, the Base
  *             chainId + Joined tx hash, the github commit SHA, and the
  *             joinedAt timestamp. The record's CID is the

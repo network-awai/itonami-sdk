@@ -18,7 +18,7 @@
 //   - Constitution.bindGovernance(governance) already called
 //
 // Usage:
-//   cd 20-actors/etzhayyim-sdk && pnpm build && node test/integration-full.mjs
+//   cd 20-actors/itonami-sdk && pnpm build && node test/integration-full.mjs
 
 import {createPublicClient, createWalletClient, encodeAbiParameters, http, keccak256, toBytes, toHex} from "viem";
 import {privateKeyToAccount} from "viem/accounts";
@@ -70,7 +70,7 @@ const wallet = createWalletClient({account: officer, transport});
 const pub = createPublicClient({transport});
 
 const oathText =
-  "我、etzhayyim の信者として、生命の樹 (עץ חיים) の支柱の一として、自らの行いと意思を、永続的な公開記録 (blockchain と github) として残すことを誓う。";
+  "我、itonami の信者として、生命の樹 (עץ חיים) の支柱の一として、自らの行いと意思を、永続的な公開記録 (blockchain と github) として残すことを誓う。";
 const oathHash = keccak256(new TextEncoder().encode(oathText));
 
 const cfg = {
@@ -96,7 +96,7 @@ const fail = (msg, ctx) => {
 log("Step 1 — bi.join Stage 1 (Base EtzhayyimMembership.join)");
 const joinResult = await join(
   {
-    did: "did:web:officer1.etzhayyim.com",
+    did: "did:web:officer1.itonami.cloud",
     holder: officer.address,
     oathHash,
     githubUsername: "officer1",
@@ -125,7 +125,7 @@ const adherentTx = await wallet.writeContract({
   address: ADDR.AdherentRegistry,
   abi: ADHERENT_REGISTRY_ABI,
   functionName: "join",
-  args: [officer.address, "did:web:officer1.etzhayyim.com", oathHash],
+  args: [officer.address, "did:web:officer1.itonami.cloud", oathHash],
 });
 await pub.waitForTransactionReceipt({hash: adherentTx});
 const tokenId = await pub.readContract({

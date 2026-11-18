@@ -85,7 +85,7 @@ export interface PayOpts {
     reason: PaymentReason;
 }
 export interface PaymentReason {
-    /** NSID. Default `com.etzhayyim.apps.payment.sent`. */
+    /** NSID. Default `cloud.itonami.apps.payment.sent`. */
     collection?: string;
     /** Purpose tag. */
     purpose: PaymentPurpose;
